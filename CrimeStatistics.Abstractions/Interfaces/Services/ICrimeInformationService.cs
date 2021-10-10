@@ -7,6 +7,6 @@ namespace CrimeStatistics.Domain.Interfaces.Services
 {
     public interface ICrimeInformationService
     {
-        public Task<IList<CrimeInformationDto>> GetCrimeInformation(CrimeFilterDto crimeFilter);
+        public Task<IList<CategorisedInformationDto>> GetCrimeInformation(CrimeFilterDto crimeFilter);
     }
 }

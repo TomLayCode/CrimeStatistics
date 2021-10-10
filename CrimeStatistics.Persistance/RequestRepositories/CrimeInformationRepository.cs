@@ -2,8 +2,8 @@
 using CrimeStatistics.Domain.DataTransfer.Objects;
 using CrimeStatistics.Domain.Interfaces.Repositories;
 using CrimeStatistics.Persistance.Entities;
+using CrimeStatistics.Persistance.MappingExtensions;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CrimeStatistics.Persistance.RequestRepositories
@@ -26,9 +26,9 @@ namespace CrimeStatistics.Persistance.RequestRepositories
                 url = url + $"&date ={ crimeFilter.Month?.ToString("yyyy-MM")}";
             }
 
-            var request = await _apiRequestService.ExecuteApiRequest(url);
-
-            throw new System.NotImplementedException();
+            var request = await _apiRequestService.ExecuteApiRequest<IList<CrimeData>>(url);
+            
+            return request.ToCrimeInformationDto(); ;
         }
     }
 }

@@ -8,13 +8,13 @@ namespace CrimeStatistics.Persistance
 {
     public class ApiRequestService
     {
-        public async Task<HttpContent> ExecuteApiRequest(string appendage)
+        public async Task<T> ExecuteApiRequest<T>(string url)
         {
-            using (HttpResponseMessage response = await WebContext.WebApiClient.GetAsync(WebContext.WebApiClient.BaseAddress + appendage))
+            using (HttpResponseMessage response = await WebContext.WebApiClient.GetAsync(WebContext.WebApiClient.BaseAddress + url))
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return response.Content;
+                    return await response.Content.ReadAsAsync<T>();
                 }
                 else
                 {

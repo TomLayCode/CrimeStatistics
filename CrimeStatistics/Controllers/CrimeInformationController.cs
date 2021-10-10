@@ -8,27 +8,20 @@ using System.Threading.Tasks;
 
 namespace CrimeStatistics.Controllers
 {
-    //Acceptance Criteria
-    //• For any UK latitude/longitude and a month in the last year, a summary of crimes is returned.
-    //• The count of crimes are shown, grouped by category.
-    //Technical Requirements
-    //• The solution should make use of .NET, but the type of application is not limited.
-    //• You may use whatever libraries / packages you wish.
-    //• Your solution must include tests.
-
+    [ApiController]
+    [Route("[controller]")]
     public class CrimeInformationController : Controller
     {
-        private readonly IMediator _mediator;
+        private IMediator _mediator;
         public CrimeInformationController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IList<CrimeInformationDto>> GetCrimeInformationAsync(CrimeFilterDto crimeFilter)
+        public async Task<IList<CategorisedInformationDto>> GetCrimeInformationAsync(CrimeFilterDto crimeFilter)
         {
-            return await _mediator.Send(new GetCrimeInformation(crimeFilter));
-            
+            return await _mediator.Send(new GetCrimeInformation.Query(crimeFilter));
         }
     }
 }

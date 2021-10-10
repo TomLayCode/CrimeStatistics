@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using CrimeStatistics.Application.Querys;
+using MediatR;
+using CrimeStatistics.Domain.Interfaces.Services;
+using CrimeStatistics.Infrastructure.Services;
+using CrimeStatistics.Domain.Interfaces.Repositories;
+using CrimeStatistics.Persistance.RequestRepositories;
+using CrimeStatistics.Persistance;
 
 namespace CrimeStatistics
 {
@@ -14,6 +19,7 @@ namespace CrimeStatistics
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            WebContext.InitialiseClient();
         }
 
         public IConfiguration Configuration { get; }
@@ -22,6 +28,12 @@ namespace CrimeStatistics
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddMediatR(typeof(Startup), typeof(GetCrimeInformation));
+
+            services.AddScoped<ICrimeInformationService, CrimeInformationService>();
+            services.AddScoped<ICrimeInformationRepository, CrimeInformationRepository>();
+
+            services.AddSingleton<ApiRequestService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

@@ -8,25 +8,30 @@ using System.Threading.Tasks;
 
 namespace CrimeStatistics.Application.Querys
 {
-    public class GetCrimeInformation : IRequest<List<CrimeInformationDto>>
+    public class GetCrimeInformation
     {
-        public CrimeFilterDto CrimeFilter { get;}
+        public class Query : IRequest<IList<CategorisedInformationDto>>
+        {
+            public CrimeFilterDto CrimeFilter { get; }
 
-        public GetCrimeInformation(CrimeFilterDto crimeFilter)
+            public Query(CrimeFilterDto crimeFilter)
+            {
+                CrimeFilter = crimeFilter;
+            }
+        }
+
+        public class Handler : IRequestHandler<Query, IList<CategorisedInformationDto>>
         {
-            CrimeFilter = crimeFilter;
+            private readonly ICrimeInformationService _crimeInformation;
+            public Handler(ICrimeInformationService crimeInformation)
+            {
+                _crimeInformation = crimeInformation;
+            }
+            public async Task<IList<CategorisedInformationDto>> Handle(Query request, CancellationToken cancellationToken)
+            {
+                return await _crimeInformation.GetCrimeInformation(request.CrimeFilter);
+            }
         }
     }
-    public class GeyCrimeInformationHandler : IRequestHandler<GetCrimeInformation, IList<CrimeInformationDto>>
-    {
-        private readonly ICrimeInformationService _crimeInformation;
-        public GeyCrimeInformationHandler(ICrimeInformationService crimeInformation)
-        {
-            _crimeInformation = crimeInformation;
-        }
-        public async Task<IList<CrimeInformationDto>> Handle(GetCrimeInformation request, CancellationToken cancellationToken)
-        {
-            return await _crimeInformation.GetCrimeInformation(request.CrimeFilter);
-        }
-    }
+    
 }
